@@ -16,10 +16,11 @@
  * limitations under the License.
  */
 
-#include <httpd.h>
-#include <http_config.h>
-#include <apr_optional.h>
-#include <mod_log_config.h>
+#include "httpd.h"
+#include "http_config.h"
+#include "apr_optional.h"
+#include "apr_strings.h"
+#include "mod_log_config.h"
 
 #include <stdlib.h>
 #include <unistd.h>

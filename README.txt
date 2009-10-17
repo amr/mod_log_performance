@@ -35,7 +35,7 @@ USAGE
 
    Once installed, you can now use the following new mod_log_config formatter:
 
-     %j | The resident non-shared stack size for the request process
+     %j | The resident non-shared stack size (kB) for the request process
 
    If you are not sure how to use that, check mod_log_config documentation:
 

@@ -13,18 +13,20 @@ INTRODUCTION
 STATUS
 ======
 
-  Works, but considered it experimental until it’s polished. It has been only
-  tested on GNU/Linux with the prefork MPM.
+  Works, but is pretty experimental at this stage. It has been only tested on
+  GNU/Linux with the prefork MPM.
 
 INSTALLATION
 ============
 
-  1. You need the Apache2 HTTP Server development files. On Debian that means
-     installing the package apache2-prefork-dev.
+  1. You need the Apache2 HTTP Server development files. That means installing
+     the package apache2-prefork-dev on Debian or httpd-devel on Redhat.
 
-  2. Then using apxs2 to compile & install:
+  2. Then using apxs to compile & install:
 
-     $: apxs2 -c -i mod_log_performance.c
+     $: apxs -c -i mod_log_performance.c
+
+     Note: On Debian it's `apxs2`
 
   3. Load the module by adding this to your configuration:
 
@@ -33,10 +35,23 @@ INSTALLATION
 USAGE
 =====
 
-   Once installed, you can now use the following new mod_log_config formatter:
+   Once installed, you can now use the following new mod_log_config specifier:
 
      %j | The resident non-shared stack size (kB) for the request process
 
    If you are not sure how to use that, check mod_log_config documentation:
 
      http://httpd.apache.org/docs/2.2/mod/mod_log_config.html
+
+TODOs
+=====
+
+  * Add more features (i.e. formatting specifiers)
+    * RSS delta between requests
+    * CPU user time delta
+  * Support the Worker (multi-threaded) MPM
+  * Build scripts
+  * Testing on other platforms supported by Apache HTTP server, which include
+    but not limited to: OpenBSD, FreeBSD, NetBSD, Solaris, AIX, OS X, HPUX
+  * Support Win32 (since I rely on /proc filesystem, I know for sure that Win32
+    is currently not supported)

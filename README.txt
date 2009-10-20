@@ -35,13 +35,13 @@ INSTALLATION
 USAGE
 =====
 
-   Once installed, you can now use the following new mod_log_config specifier:
+  Once installed, you can now use the following new mod_log_config specifier:
 
-     %j | The resident non-shared stack size (kB) for the request process
+    %j | The resident set size in kB for the request process
 
-   If you are not sure how to use that, check mod_log_config documentation:
+  If you are not sure how to use that, check mod_log_config documentation:
 
-     http://httpd.apache.org/docs/2.2/mod/mod_log_config.html
+    http://httpd.apache.org/docs/2.2/mod/mod_log_config.html
 
 TODOs
 =====

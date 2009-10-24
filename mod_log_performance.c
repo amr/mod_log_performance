@@ -27,14 +27,14 @@
 
 static int pagesize = 1;
 
-static const char *my_rss(request_rec *r)
+static const int mlp_get_rss(request_rec *r)
 {
     char *filename;
     filename = apr_psprintf(r->pool, "/proc/%s/stat", ap_append_pid(r->pool, "", ""));
 
     apr_file_t *procfile;
     if (APR_SUCCESS != apr_file_open(&procfile, filename, APR_READ, APR_OS_DEFAULT, r->pool)) {
-        return "-";
+        return -1;
     }
 
     static char stat[1024];
@@ -51,7 +51,7 @@ static const char *my_rss(request_rec *r)
         for (i = 0; i < 21; i++) {
             sp = strchr(sp, ' ');
             if (sp == NULL) {
-                return "-";
+                return -1;
             }
             sp++;
         }
@@ -64,16 +64,38 @@ static const char *my_rss(request_rec *r)
         *sp = '\0';
 
         // Convert to kB and return
-        return (const char *) apr_itoa(r->pool, (atoi(rss) * pagesize) / 1024);
+        return (atoi(rss) * pagesize) / 1024;
     }
 
     apr_file_close(procfile);
-    return "-";
+    return -1;
 }
 
-static const char *log_memory(request_rec *r, char *a)
+static const char *log_rss(request_rec *r, char *a)
 {
-    return my_rss(r);
+    const int rss = mlp_get_rss(r);
+    if (rss <= 0) {
+        return "-";
+    }
+
+    return (const char *) apr_itoa(r->pool, rss);
+}
+
+static const char *log_rss_delta(request_rec *r, char *a)
+{
+    static int previous_rss = -1;
+    int delta, rss;
+
+    rss = mlp_get_rss(r);
+
+    if (rss >= 0 && previous_rss >= 0) {
+        delta = rss - previous_rss;
+        previous_rss = rss;
+        return (const char *) apr_itoa(r->pool, delta);
+    }
+
+    previous_rss = rss;
+    return "-";
 }
 
 static int mlp_pre_config(apr_pool_t *p, apr_pool_t *plog, apr_pool_t *ptemp)
@@ -83,7 +105,8 @@ static int mlp_pre_config(apr_pool_t *p, apr_pool_t *plog, apr_pool_t *ptemp)
     log_pfn_register = APR_RETRIEVE_OPTIONAL_FN(ap_register_log_handler);
 
     if (log_pfn_register) {
-        log_pfn_register(p, "j", log_memory, 0);
+        log_pfn_register(p, "j", log_rss, 0);
+        log_pfn_register(p, "J", log_rss_delta, 0);
     }
 
     return OK;

@@ -38,6 +38,7 @@ USAGE
   Once installed, you can now use the following new mod_log_config specifier:
 
     %j | The resident set size in kB for the request process
+    %J | Like %j, but logs the change (delta) from previous request
 
   If you are not sure how to use that, check mod_log_config documentation:
 
@@ -47,7 +48,6 @@ TODOs
 =====
 
   * Add more features (i.e. formatting specifiers)
-    * RSS delta between requests
     * CPU user time delta
   * Support the Worker (multi-threaded) MPM
   * Build scripts

@@ -35,10 +35,11 @@ INSTALLATION
 USAGE
 =====
 
-  Once installed, you can now use the following new mod_log_config specifier:
+  Once installed, you can now use the following new mod_log_config specifiers:
 
     %j | The resident set size in kB for the request process
     %J | Like %j, but logs the change (delta) from previous request
+    %c | The absolute CPU user time in ms for the request process
 
   If you are not sure how to use that, check mod_log_config documentation:
 

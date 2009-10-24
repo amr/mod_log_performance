@@ -24,6 +24,8 @@
 
 #include <stdlib.h>
 #include <unistd.h>
+#include <sys/time.h>
+#include <sys/resource.h>
 
 static int pagesize = 1;
 
@@ -71,6 +73,14 @@ static const int mlp_get_rss(request_rec *r)
     return -1;
 }
 
+static const char *log_cpu_utime(request_rec *r, char *a)
+{
+    struct rusage rs;
+    getrusage(RUSAGE_SELF, &rs);
+
+    return (const char *) apr_psprintf(r->pool, "%ld.%06ld", rs.ru_utime.tv_sec, rs.ru_utime.tv_usec);
+}
+
 static const char *log_rss(request_rec *r, char *a)
 {
     const int rss = mlp_get_rss(r);
@@ -107,6 +117,7 @@ static int mlp_pre_config(apr_pool_t *p, apr_pool_t *plog, apr_pool_t *ptemp)
     if (log_pfn_register) {
         log_pfn_register(p, "j", log_rss, 0);
         log_pfn_register(p, "J", log_rss_delta, 0);
+        log_pfn_register(p, "c", log_cpu_utime, 0);
     }
 
     return OK;
